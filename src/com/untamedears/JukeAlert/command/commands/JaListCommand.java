@@ -1,19 +1,23 @@
 package com.untamedears.JukeAlert.command.commands;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.untamedears.JukeAlert.command.PlayerCommand;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+
+import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.tasks.GetSnitchListPlayerTask;
 
-public class JaListCommand extends PlayerCommand{
+public class JaListCommand extends PlayerCommand {
 	public JaListCommand() {
 		super("jalist");
 		setDescription("Displays Juke List Information");
 		setUsage("/jalist <page number>");
-		setArgumentRange(0,1);
+		setArguments(0,1);
 		setIdentifier("jalist");
 	}
 
@@ -41,8 +45,13 @@ public class JaListCommand extends PlayerCommand{
 
     private void sendSnitchList(CommandSender sender, int offset) {
         Player player = (Player) sender;
-        GetSnitchListPlayerTask task = new GetSnitchListPlayerTask(plugin, offset, player);
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, task);
+        GetSnitchListPlayerTask task = new GetSnitchListPlayerTask(JukeAlert.getInstance(), offset, player);
+        Bukkit.getScheduler().runTaskAsynchronously(JukeAlert.getInstance(), task);
 
     }
+
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return null;
+	}
 }

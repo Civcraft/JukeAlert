@@ -8,10 +8,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-import com.untamedears.JukeAlert.command.CommandHandler;
+import com.untamedears.JukeAlert.command.JukeAlertCommandHandler;
 import com.untamedears.JukeAlert.command.commands.ClearCommand;
 import com.untamedears.JukeAlert.command.commands.ConfigCommand;
 import com.untamedears.JukeAlert.command.commands.GroupCommand;
@@ -33,24 +34,27 @@ import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.storage.JukeAlertLogger;
 import com.untamedears.JukeAlert.util.RateLimiter;
 
-public class JukeAlert extends JavaPlugin {
+public class JukeAlert extends ACivMod {
 
     private static JukeAlert instance;
     private JukeAlertLogger jaLogger;
     private ConfigManager configManager;
     private SnitchManager snitchManager;
     private PlayerManager playerManager;
-    private CommandHandler commandHandler;
+    private JukeAlertCommandHandler commandHandler;
     private GroupMediator groupMediator;
 
     @Override
     public void onEnable() {
+    	super.onEnable();
         instance = this;
         configManager = new ConfigManager();
         groupMediator = new GroupMediator();
         jaLogger = new JukeAlertLogger();
         snitchManager = new SnitchManager();
         playerManager = new PlayerManager();
+        handle = new JukeAlertCommandHandler();
+        handle.registerCommands();
         registerEvents();
         registerNameLayerPermissions();
         registerCommands();
@@ -61,11 +65,6 @@ public class JukeAlert extends JavaPlugin {
     @Override
     public void onDisable() {
         snitchManager.saveSnitches();
-    }
-
-    @Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        return commandHandler.dispatch(sender, label, args);
     }
 
     private void registerEvents() {
@@ -97,21 +96,6 @@ public class JukeAlert extends JavaPlugin {
     	PermissionType.registerPermission("SNITCH_TOGGLE_LEVER", (LinkedList<PlayerType>)modAndAbove.clone());
     }
 
-    private void registerCommands() {
-        commandHandler = new CommandHandler();
-        commandHandler.addCommand(new InfoCommand());
-        commandHandler.addCommand(new JaListCommand());
-        commandHandler.addCommand(new NameCommand());
-        commandHandler.addCommand(new ClearCommand());
-        commandHandler.addCommand(new HelpCommand());
-        commandHandler.addCommand(new JaCommand());
-        commandHandler.addCommand(new GroupCommand());
-        commandHandler.addCommand(new LookupCommand());
-        commandHandler.addCommand(new JaMuteCommand());
-        commandHandler.addCommand(new ConfigCommand());
-        commandHandler.addCommand(new JaToggleLeversCommand());
-    }
-
     public static JukeAlert getInstance() {
         return instance;
     }
@@ -136,7 +120,7 @@ public class JukeAlert extends JavaPlugin {
         return groupMediator;
     }
 
-    public CommandHandler getCommandHandler() {
+    public JukeAlertCommandHandler getCommandHandler() {
         return commandHandler;
     }
 
@@ -144,4 +128,9 @@ public class JukeAlert extends JavaPlugin {
     public void log(String message) {
         this.getLogger().log(Level.INFO, message);
     }
+
+	@Override
+	protected String getPluginName() {
+		return "JukeAlert";
+	}
 }

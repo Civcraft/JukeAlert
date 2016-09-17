@@ -2,14 +2,16 @@ package com.untamedears.JukeAlert.command.commands;
 
 import static com.untamedears.JukeAlert.util.Utility.findLookingAtOrClosestSnitch;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.untamedears.JukeAlert.JukeAlert;
-import com.untamedears.JukeAlert.command.PlayerCommand;
 import com.untamedears.JukeAlert.model.Snitch;
 
 public class JaToggleLeversCommand extends PlayerCommand {
@@ -17,7 +19,7 @@ public class JaToggleLeversCommand extends PlayerCommand {
 	        super("ToggleLevers");
 	        setDescription("Sets flag indicating if this juke will toggle levers on certain actions.");
 	        setUsage("/JaToggleLevers <1|0>");
-	        setArgumentRange(1, 1);
+	        setArguments(1, 1);
 	        setIdentifier("jatogglelevers");
 	    }
 
@@ -55,7 +57,7 @@ public class JaToggleLeversCommand extends PlayerCommand {
                     sender.sendMessage(ChatColor.RED + "Toggle Lever Settings can only be applied to logging jukeboxes.");
                     return false;
             	}
-            	
+            	JukeAlert plugin = JukeAlert.getInstance();
             	plugin.getJaLogger().updateSnitchToggleLevers(snitch, flag);
             	Snitch newSnitch = snitch;
             	newSnitch.setShouldToggleLevers(flag);
@@ -75,4 +77,9 @@ public class JaToggleLeversCommand extends PlayerCommand {
             return false;
         }
     }
+
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return null;
+	}
 }

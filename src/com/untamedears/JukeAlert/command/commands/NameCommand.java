@@ -2,13 +2,16 @@ package com.untamedears.JukeAlert.command.commands;
 
 import static com.untamedears.JukeAlert.util.Utility.findLookingAtOrClosestSnitch;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-import com.untamedears.JukeAlert.command.PlayerCommand;
+import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
 
 
@@ -18,7 +21,7 @@ public class NameCommand extends PlayerCommand {
         super("Name");
         setDescription("Set snitch name");
         setUsage("/janame <name>");
-        setArgumentRange(1, 1);
+        setArguments(1, 1);
         setIdentifier("janame");
     }
 
@@ -35,6 +38,7 @@ public class NameCommand extends PlayerCommand {
             }
             Snitch snitch = findLookingAtOrClosestSnitch(player, PermissionType.getPermission("RENAME_SNITCH"));
             if (snitch != null) {
+            	JukeAlert plugin = JukeAlert.getInstance();
             	plugin.getJaLogger().updateSnitchName(snitch, name);
             	Snitch newSnitch = snitch;
             	newSnitch.setName(name);
@@ -48,4 +52,9 @@ public class NameCommand extends PlayerCommand {
             return false;
         }
     }
+
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return null;
+	}
 }

@@ -8,7 +8,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.untamedears.JukeAlert.command.PlayerCommand;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+
+import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.util.IgnoreList;
 
 public class JaMuteCommand extends PlayerCommand {
@@ -17,7 +19,7 @@ public class JaMuteCommand extends PlayerCommand {
 		super("jamute");
 		setDescription("Mutes/Unmutes notifications from a given snitch group.");
 		setUsage("/jamute <group>");
-		setArgumentRange(0,1);
+		setArguments(0,1);
 		setIdentifier("jamute");
 	}
 	
@@ -40,6 +42,7 @@ public class JaMuteCommand extends PlayerCommand {
    private void toggleIgnore(CommandSender sender, String groupName) {
        final Player player = (Player)sender;
        final UUID accountId = player.getUniqueId();
+       JukeAlert plugin = JukeAlert.getInstance();
 
        if (groupName.equals("*")) {
            if (IgnoreList.toggleIgnoreAll(accountId)) {
@@ -74,6 +77,7 @@ public class JaMuteCommand extends PlayerCommand {
    }
 
     private void sendIgnoreGroupList(CommandSender sender) {
+    	JukeAlert plugin = JukeAlert.getInstance();
         final Player player = (Player) sender;
         final UUID accountId = player.getUniqueId();
         if (IgnoreList.doesPlayerIgnoreAll(accountId)) {
@@ -82,8 +86,8 @@ public class JaMuteCommand extends PlayerCommand {
         }
         //IgnoreList.GetGroupIgnoreListByPlayer(accountId);
         //new pull from db to get ignored groups
-        String ignoredGroups = this.plugin.getJaLogger().getMutedGroups(accountId);
-        this.plugin.log("Ignored Groups for Player is: " + ignoredGroups);
+        String ignoredGroups = plugin.getJaLogger().getMutedGroups(accountId);
+        plugin.log("Ignored Groups for Player is: " + ignoredGroups);
         if(ignoredGroups == null){
         	sender.sendMessage("* No Group Ignores");
         }
@@ -108,4 +112,9 @@ public class JaMuteCommand extends PlayerCommand {
             sender.sendMessage(sb.toString());
         }
     }
+
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return null;
+	}
 }

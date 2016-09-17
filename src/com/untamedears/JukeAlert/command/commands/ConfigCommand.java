@@ -1,8 +1,11 @@
 package com.untamedears.JukeAlert.command.commands;
 
+import java.util.List;
+
 import org.bukkit.command.CommandSender;
 
-import com.untamedears.JukeAlert.command.PlayerCommand;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+
 import com.untamedears.JukeAlert.util.RateLimiter;
 
 public class ConfigCommand extends PlayerCommand {
@@ -11,7 +14,7 @@ public class ConfigCommand extends PlayerCommand {
         super("Config");
         setDescription("Run-time configuration");
         setUsage("/jaconfig");
-        setArgumentRange(2, 2);
+        setArguments(2, 2);
         setIdentifier("jaconfig");
     }
 
@@ -37,4 +40,9 @@ public class ConfigCommand extends PlayerCommand {
         }
         return true;
     }
+
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return null;
+	}
 }

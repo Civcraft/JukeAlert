@@ -2,6 +2,7 @@ package com.untamedears.JukeAlert.command.commands;
 
 import static com.untamedears.JukeAlert.util.Utility.findLookingAtOrClosestSnitch;
 
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -11,9 +12,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-import com.untamedears.JukeAlert.command.PlayerCommand;
+import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.tasks.GetSnitchInfoPlayerTask;
 
@@ -34,7 +36,7 @@ public class InfoCommand extends PlayerCommand {
         super("Info");
         setDescription("Displays information from a Snitch");
         setUsage("/jainfo <page number or 'next'> [censor]");
-        setArgumentRange(0, 2);
+        setArguments(0, 2);
         setIdentifier("jainfo");
     }
 
@@ -80,8 +82,14 @@ public class InfoCommand extends PlayerCommand {
 
     private void sendLog(CommandSender sender, Snitch snitch, int offset, boolean shouldCensor) {
         Player player = (Player) sender;
-        GetSnitchInfoPlayerTask task = new GetSnitchInfoPlayerTask(plugin, snitch.getId(), snitch.getName(), offset, player, shouldCensor);
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, task);
+        GetSnitchInfoPlayerTask task = new GetSnitchInfoPlayerTask(JukeAlert.getInstance(), snitch.getId(), snitch.getName(), offset, player, shouldCensor);
+        Bukkit.getScheduler().runTaskAsynchronously(JukeAlert.getInstance(), task);
 
     }
+
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

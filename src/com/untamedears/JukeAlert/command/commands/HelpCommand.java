@@ -1,10 +1,12 @@
 package com.untamedears.JukeAlert.command.commands;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.untamedears.JukeAlert.command.PlayerCommand;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
 public class HelpCommand extends PlayerCommand {
 
@@ -12,7 +14,7 @@ public class HelpCommand extends PlayerCommand {
 		super("Help");
 		setDescription("Displays help");
 		setUsage("/jahelp");
-		setArgumentRange(0,0);
+		setArguments(0,0);
 		setIdentifier("jahelp");
 	}
 
@@ -24,6 +26,11 @@ public class HelpCommand extends PlayerCommand {
 		}
 		
 		return true;
+	}
+
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return null;
 	}
 
 }

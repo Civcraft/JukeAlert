@@ -1,5 +1,6 @@
 package com.untamedears.JukeAlert.command.commands;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -7,10 +8,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.group.Group;
 
-import com.untamedears.JukeAlert.command.PlayerCommand;
+import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.tasks.GetSnitchInfoPlayerTask;
 
 public class GroupCommand extends PlayerCommand {
@@ -19,7 +21,7 @@ public class GroupCommand extends PlayerCommand {
         super("Group");
         setDescription("Displays information from a group");
         setUsage("/jagroup <group> <page>");
-        setArgumentRange(1, 2);
+        setArguments(1, 2);
         setIdentifier("jagroup");
     }
 
@@ -60,7 +62,12 @@ public class GroupCommand extends PlayerCommand {
 
     private void sendLog(CommandSender sender, String group, int offset) {
         Player player = (Player) sender;
-        GetSnitchInfoPlayerTask task = new GetSnitchInfoPlayerTask(plugin, group, offset, player);
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, task);
+        GetSnitchInfoPlayerTask task = new GetSnitchInfoPlayerTask(JukeAlert.getInstance(), group, offset, player);
+        Bukkit.getScheduler().runTaskAsynchronously(JukeAlert.getInstance(), task);
     }
+
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return null;
+	}
 }
