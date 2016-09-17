@@ -4,15 +4,13 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
 
-import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.Utility;
-import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+import vg.civcraft.mc.civmodcore.locations.QTBox;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.GroupManager;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.manager.ConfigManager;
-import com.untamedears.JukeAlert.util.QTBox;
 
 public class Snitch implements QTBox, Comparable {
 
@@ -63,17 +61,17 @@ public class Snitch implements QTBox, Comparable {
     }
 
     @Override
-    public int qtYMin() {
+    public int qtZMin() {
         return this.minz;
     }
 
     @Override
-    public int qtYMid() {
-        return this.getY();
+    public int qtZMid() {
+        return this.getZ();
     }
 
     @Override
-    public int qtYMax() {
+    public int qtZMax() {
         return this.maxz;
     }
     // end interface QTBox
@@ -143,7 +141,7 @@ public class Snitch implements QTBox, Comparable {
 
     public Group getGroup() {
         if (group != null && !group.isValid()) {
-            group = NameAPI.getGroupManager().getGroup(group.getName());
+            group = GroupManager.getGroup(group.getName());
         }
         return group;
     }

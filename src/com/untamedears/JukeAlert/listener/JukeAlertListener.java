@@ -6,7 +6,6 @@ import static com.untamedears.JukeAlert.util.Utility.immuneToSnitch;
 import static com.untamedears.JukeAlert.util.Utility.notifyGroup;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -64,6 +63,7 @@ import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.events.GroupDeleteEvent;
 import vg.civcraft.mc.namelayer.events.GroupInvalidationEvent;
@@ -78,7 +78,6 @@ public class JukeAlertListener implements Listener {
     SnitchManager snitchManager = plugin.getSnitchManager();
     PlayerManager playerManager = plugin.getPlayerManager();
     private final Map<UUID, Set<Snitch>> playersInSnitches = new TreeMap<UUID, Set<Snitch>>();
-    private final ArrayList<Location> previousLocations = new ArrayList<Location>();
     private final VanishNoPacket vanishNoPacket = new VanishNoPacket();
     private final Mercury mercury = new Mercury();
 
@@ -117,7 +116,6 @@ public class JukeAlertListener implements Listener {
                 if (mercury.isEnabled() && plugin.getConfigManager().getBroadcastAllServers())
                 	mercury.sendMessage(snitch.getGroup().getName() + " " + message, "jukealert-login");
                 } catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
                 if (snitch.shouldLog()) {
@@ -154,7 +152,6 @@ public class JukeAlertListener implements Listener {
                 if (mercury.isEnabled() && plugin.getConfigManager().getBroadcastAllServers())
                 	mercury.sendMessage(snitch.getGroup().getName() + " " + message, "jukealert-logout");
                 } catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
                 if (snitch.shouldLog()) {
@@ -307,7 +304,7 @@ public class JukeAlertListener implements Listener {
     	else if (reason.equalsIgnoreCase("merge")) {
     		String group1 = event.getParameter() [0];
     		String group2 = event.getParameter() [1];
-    		Group g1 = NameAPI.getGroupManager().getGroup(group1);
+    		Group g1 = GroupManager.getGroup(group1);
             Set<Snitch> mergeSet = new TreeSet<Snitch>();
             for (Snitch snitch : snitchManager.getAllSnitches()) {
                 final Group snitchGroup = snitch.getGroup();
@@ -600,7 +597,6 @@ public class JukeAlertListener implements Listener {
     public void playerKillEntity(EntityDeathEvent event) {
         LivingEntity entity = event.getEntity();
         LivingEntity killer = entity.getKiller();
-        // TODO: This should never be true, bug?
         if (entity instanceof Player) {
             return;
         }

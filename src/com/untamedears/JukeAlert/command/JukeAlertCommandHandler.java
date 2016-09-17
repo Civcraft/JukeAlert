@@ -1,10 +1,5 @@
 package com.untamedears.JukeAlert.command;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import org.bukkit.command.CommandSender;
-
 import com.untamedears.JukeAlert.command.commands.ClearCommand;
 import com.untamedears.JukeAlert.command.commands.ConfigCommand;
 import com.untamedears.JukeAlert.command.commands.GroupCommand;

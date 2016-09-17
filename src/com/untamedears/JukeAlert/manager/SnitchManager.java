@@ -19,6 +19,8 @@ import org.bukkit.World;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
+import vg.civcraft.mc.civmodcore.locations.QTBox;
+import vg.civcraft.mc.civmodcore.locations.SparseQuadTree;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -26,8 +28,6 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.storage.JukeAlertLogger;
-import com.untamedears.JukeAlert.util.QTBox;
-import com.untamedears.JukeAlert.util.SparseQuadTree;
 
 public class SnitchManager {
 

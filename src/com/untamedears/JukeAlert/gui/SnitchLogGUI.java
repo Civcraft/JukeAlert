@@ -8,7 +8,9 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
@@ -92,6 +94,9 @@ public class SnitchLogGUI {
 				break;
 			case KILL:
 				is = new ItemStack(Material.DIAMOND_SWORD);
+				ItemMeta im = is.getItemMeta();
+				im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+				is.setItemMeta(im);
 				ISUtils.setName(is, ChatColor.GOLD + action.getVictim().toString() + " killed by " + action.getInitiateUser());
 				break;
 			case LOGIN:
