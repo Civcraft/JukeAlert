@@ -3,11 +3,9 @@ package com.untamedears.JukeAlert.command.commands;
 import static com.untamedears.JukeAlert.util.Utility.findLookingAtOrClosestSnitch;
 
 import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.untamedears.JukeAlert.command.PlayerCommand;
@@ -28,7 +26,6 @@ public class NameCommand extends PlayerCommand {
     public boolean execute(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            World world = player.getWorld();
 
             String name = "";
             if (args[0].length() > 40) {

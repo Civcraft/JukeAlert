@@ -3,11 +3,9 @@ package com.untamedears.JukeAlert.command.commands;
 import static com.untamedears.JukeAlert.util.Utility.findLookingAtOrClosestSnitch;
 
 import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.untamedears.JukeAlert.JukeAlert;
@@ -33,9 +31,6 @@ public class JaToggleLeversCommand extends PlayerCommand {
     	
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            World world = player.getWorld();
-
-            String name = "";
             int flagValue;
             Boolean flag;
             try {

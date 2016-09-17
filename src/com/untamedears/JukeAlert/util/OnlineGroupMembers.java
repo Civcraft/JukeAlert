@@ -14,10 +14,7 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.permission.GroupPermission;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.manager.ConfigManager;
@@ -33,7 +30,6 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
         return new OnlineGroupMembers(groupName);
     }
 
-    private GroupManager manager_;
     private String groupName_;
     private Iterator<OfflinePlayer> mods_iter_ = null;
     private Iterator<OfflinePlayer> member_iter_ = null;
@@ -47,7 +43,6 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
     private Set<String> skipList_= null;
 
     public OnlineGroupMembers(String groupName) {
-        manager_ = NameAPI.getGroupManager();
         groupName_ = groupName;
 
         ConfigManager config = JukeAlert.getInstance().getConfigManager();
@@ -133,7 +128,7 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
     }
 
     private Player getFounder() {
-        Group group = manager_.getGroup(groupName_);
+        Group group = GroupManager.getGroup(groupName_);
         if (group != null) {
             Player player = Bukkit.getPlayer(group.getOwner());
             if (player != null)
@@ -144,9 +139,8 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
 
     private Player getNextModerator() {
         if (mods_iter_ == null) {
-            List<UUID> uuids = manager_.getGroup(groupName_).getAllMembers();
-            Group g = manager_.getGroup(groupName_);
-            GroupPermission perm = manager_.getPermissionforGroup(g);
+            List<UUID> uuids = GroupManager.getGroup(groupName_).getAllMembers();
+            Group g = GroupManager.getGroup(groupName_);
             List<OfflinePlayer> mods = new ArrayList<OfflinePlayer>();
             for (UUID uuid: uuids)
             	if (g.getPlayerType(uuid) != PlayerType.MEMBERS && !g.isOwner(uuid))
@@ -166,13 +160,13 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
 
     private Player getNextMember() {
         if (member_iter_ == null) {
-        	List<UUID> uuids = manager_.getGroup(groupName_).getAllMembers();
+        	List<UUID> uuids = GroupManager.getGroup(groupName_).getAllMembers();
         	List<OfflinePlayer> members = new ArrayList<OfflinePlayer>();
             for (UUID uuid: uuids){
-            	Group g = manager_.getGroup(groupName_);
-            	GroupPermission perm = manager_.getPermissionforGroup(g);
-            	if (g.getPlayerType(uuid) == PlayerType.MEMBERS && !g.getOwner().equals(uuid))
+            	Group g = GroupManager.getGroup(groupName_);
+            	if (g.getPlayerType(uuid) == PlayerType.MEMBERS && !g.getOwner().equals(uuid)) {
             		members.add(Bukkit.getOfflinePlayer(uuid));
+            	}
             member_iter_ = members.iterator();
             }
         }

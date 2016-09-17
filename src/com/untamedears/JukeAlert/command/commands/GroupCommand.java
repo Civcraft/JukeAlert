@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.group.Group;
 
 import com.untamedears.JukeAlert.command.PlayerCommand;
@@ -39,7 +39,7 @@ public class GroupCommand extends PlayerCommand {
                 offset = 1;
             }
             if (!sender.hasPermission("jukealert.admin.jagroup")) {
-                Group group = NameAPI.getGroupManager().getGroup(args[0]);
+                Group group = GroupManager.getGroup(args[0]);
                 if (group == null) {
                     sender.sendMessage(ChatColor.RED + "That group doesn't exist!");
                     return true;
