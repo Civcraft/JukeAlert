@@ -210,7 +210,6 @@ public class SnitchManager {
         if (snitches.get(world) == null) {
             return new TreeSet<Snitch>();
         }
-        int y = location.getBlockY();
         Set<Snitch> results = new TreeSet<Snitch>();
         Set<QTBox> found = snitches.get(world).find(
             location.getBlockX(), location.getBlockZ(), includePaddingZone);

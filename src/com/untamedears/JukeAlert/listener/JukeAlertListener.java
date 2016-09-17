@@ -840,7 +840,7 @@ public class JukeAlertListener implements Listener {
             }
             if (!immuneToSnitch(snitch, accountId) || isDebugging()) {
                 if (checkProximity(snitch, accountId)) {
-                    plugin.getJaLogger().logSnitchBucketFill(snitch, player, block);
+                    plugin.getJaLogger().logSnitchBucketFill(snitch, player, block, event.getBucket());
                 }
             }
         }
@@ -864,7 +864,7 @@ public class JukeAlertListener implements Listener {
             }
             if (!immuneToSnitch(snitch, accountId) || isDebugging()) {
                 if (checkProximity(snitch, accountId)) {
-                    plugin.getJaLogger().logSnitchBucketEmpty(snitch, player, block.getLocation(), player.getItemInHand());
+                    plugin.getJaLogger().logSnitchBucketEmpty(snitch, player, block.getLocation(), event.getBucket());
                 }
             }
         }

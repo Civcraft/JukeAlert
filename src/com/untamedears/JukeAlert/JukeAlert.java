@@ -18,7 +18,7 @@ import com.untamedears.JukeAlert.command.commands.ConfigCommand;
 import com.untamedears.JukeAlert.command.commands.GroupCommand;
 import com.untamedears.JukeAlert.command.commands.HelpCommand;
 import com.untamedears.JukeAlert.command.commands.InfoCommand;
-import com.untamedears.JukeAlert.command.commands.JaCommand;
+import com.untamedears.JukeAlert.command.commands.GUICommand;
 import com.untamedears.JukeAlert.command.commands.JaListCommand;
 import com.untamedears.JukeAlert.command.commands.JaMuteCommand;
 import com.untamedears.JukeAlert.command.commands.JaToggleLeversCommand;

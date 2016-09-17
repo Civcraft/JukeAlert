@@ -82,9 +82,6 @@ public class Utility {
     	return NameAPI.getGroupManager().hasAccess(group.getName(), accountId, PermissionType.getPermission("SNITCH_IMMUNE"));
     }
     
-    private static long failureReportDelay = 10000l;
-    private static long lastNotifyPOSFailure = System.currentTimeMillis() - failureReportDelay;
-    
     
     public static Snitch getSnitchUnderCursor(Player player) {
         SnitchManager manager = JukeAlert.getInstance().getSnitchManager();

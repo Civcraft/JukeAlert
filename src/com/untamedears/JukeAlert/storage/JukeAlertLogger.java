@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -44,6 +45,7 @@ import com.untamedears.JukeAlert.group.GroupMediator;
 import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.JukeAlert.model.LoggedAction;
 import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.JukeAlert.model.SnitchAction;
 import com.untamedears.JukeAlert.tasks.GetSnitchInfoTask;
 
 /**
@@ -83,6 +85,7 @@ public class JukeAlertLogger {
     private PreparedStatement getIgnoreUUIDSStmt;
     private PreparedStatement removeIgnoredGroupStmt;
     private PreparedStatement removeUUIDMutedStmt;
+    private PreparedStatement getAllSnitchLogs;
     private final int logsPerPage;
     private int lastSnitchID;
     private final int maxEntryCount;
@@ -423,6 +426,9 @@ public class JukeAlertLogger {
                 "SELECT * FROM %s"
                 + " WHERE snitch_id=? AND soft_delete = 0 ORDER BY snitch_log_time DESC LIMIT ?,?",
                 snitchDetailsTbl));
+        
+        //get all entries for a snitch
+        getAllSnitchLogs = db.prepareStatement(String.format("select * from %s where snitch_id = ? AND soft_delete = 0 order by snitch_log_time desc;", snitchDetailsTbl));
 
         getSnitchLogGroupStmt = db.prepareStatement(MessageFormat.format(
             "SELECT {0}.snitch_name, {1}.*"
@@ -910,9 +916,7 @@ public class JukeAlertLogger {
      * @param entity - the entity that died
      */
     public void logSnitchEntityKill(Snitch snitch, Player player, Entity entity) {
-
-        // There is no material or location involved in this event
-        this.logSnitchInfo(snitch, null, null, new Date(), LoggedAction.KILL, player.getPlayerListName(), entity.getType().toString());
+        this.logSnitchInfo(snitch, null, player.getLocation(), new Date(), LoggedAction.KILL, player.getPlayerListName(), entity.getType().toString());
     }
     
     public void logSnitchExchangeEvent(Snitch snitch, Player player, Location loc){
@@ -928,7 +932,7 @@ public class JukeAlertLogger {
      */
     public void logSnitchPlayerKill(Snitch snitch, Player player, Player victim) {
         // There is no material or location involved in this event
-        this.logSnitchInfo(snitch, null, null, new Date(), LoggedAction.KILL, player.getPlayerListName(), victim.getPlayerListName());
+        this.logSnitchInfo(snitch, null, player.getLocation(), new Date(), LoggedAction.KILL, player.getPlayerListName(), victim.getPlayerListName());
     }
 
     /**
@@ -1014,9 +1018,9 @@ public class JukeAlertLogger {
      * @param item - the ItemStack representing the bucket that the player
      * emptied
      */
-    public void logSnitchBucketEmpty(Snitch snitch, Player player, Location loc, ItemStack item) {
+    public void logSnitchBucketEmpty(Snitch snitch, Player player, Location loc, Material item) {
         // no victim user in this event
-        this.logSnitchInfo(snitch, item.getType(), loc, new Date(), LoggedAction.BUCKET_EMPTY, player.getPlayerListName(), null);
+        this.logSnitchInfo(snitch, item, loc, new Date(), LoggedAction.BUCKET_EMPTY, player.getPlayerListName(), null);
     }
     
     /**
@@ -1045,12 +1049,9 @@ public class JukeAlertLogger {
      * @param player - the player that filled the bucket
      * @param block - the block that was 'put into' the bucket
      */
-    public void logSnitchBucketFill(Snitch snitch, Player player, Block block) {
-        // TODO: should we take a block or a ItemStack as a parameter here?
-        // JM: I think it'll be fine either way, most griefing is done with with block placement and this could be updated fairly easily
-
+    public void logSnitchBucketFill(Snitch snitch, Player player, Block block, Material mat) {
         // no victim user in this event
-        this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.BUCKET_FILL, player.getPlayerListName(), null);
+        this.logSnitchInfo(snitch, mat, block.getLocation(), new Date(), LoggedAction.BUCKET_FILL, player.getName(), null);
     }
 
     /**
@@ -1061,8 +1062,6 @@ public class JukeAlertLogger {
      * @param block - the block that was used
      */
     public void logUsed(Snitch snitch, Player player, Block block) {
-        // TODO: what should we use to identify what was used? Block? Material?
-        //JM: Let's keep this consistent with block plament
         this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.BLOCK_USED, player.getPlayerListName(), null);
     }
 
@@ -1233,6 +1232,32 @@ public class JukeAlertLogger {
 
     public void logSnitchBlockBurn(Snitch snitch, Block block) {
         this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.BLOCK_BURN, "", snitchDetailsTbl);
+    }
+    
+    public List<SnitchAction> getAllSnitchLogs(Snitch snitch) {
+    	try {
+            synchronized (updateSnitchGroupStmt) {
+               getAllSnitchLogs.setInt(1, snitch.getId());
+               ResultSet rs = getAllSnitchLogs.executeQuery();
+               List <SnitchAction> log = new LinkedList<SnitchAction>();
+               while (rs.next()) {
+            	   int snitchActionId = rs.getInt("snitch_details_id");
+            	   Date date = new Date(rs.getTimestamp("snitch_log_time").getTime());
+            	   LoggedAction action = LoggedAction.getFromId(rs.getInt("snitch_logged_action"));
+            	   String initiatedUser = rs.getString("snitch_logged_initiated_user");
+            	   String victim = rs.getString("snitch_logged_victim_user");
+            	   int x = rs.getInt("snitch_logged_x");
+            	   int y = rs.getInt("snitch_logged_y");
+            	   int z = rs.getInt("snitch_logged_z");
+            	   Material mat = Material.getMaterial(rs.getInt("snitch_logged_materialid"));
+            	   log.add(new SnitchAction(snitchActionId, snitch.getId(), date, action, initiatedUser, victim, x, y, z, mat));
+               }
+               return log;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     public String createInfoString(ResultSet set, boolean isGroup) {
