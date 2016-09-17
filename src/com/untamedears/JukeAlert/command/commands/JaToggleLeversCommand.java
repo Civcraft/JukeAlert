@@ -59,10 +59,7 @@ public class JaToggleLeversCommand extends PlayerCommand {
             	}
             	JukeAlert plugin = JukeAlert.getInstance();
             	plugin.getJaLogger().updateSnitchToggleLevers(snitch, flag);
-            	Snitch newSnitch = snitch;
-            	newSnitch.setShouldToggleLevers(flag);
-            	plugin.getSnitchManager().removeSnitch(snitch);
-            	plugin.getSnitchManager().addSnitch(newSnitch);
+            	snitch.setShouldToggleLevers(flag);
             	sender.sendMessage(ChatColor.AQUA + " Changed toggle levers settings to " + (flag ? "True" : "False") + ".");
 
                 return true;

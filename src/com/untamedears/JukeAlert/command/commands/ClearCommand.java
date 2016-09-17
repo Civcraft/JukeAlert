@@ -7,6 +7,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
@@ -50,19 +51,26 @@ public class ClearCommand extends PlayerCommand {
         }
     }
 
-    private void deleteLog(CommandSender sender, Snitch snitch) {
-        Player player = (Player) sender;
-        Boolean completed = JukeAlert.getInstance().getJaLogger().deleteSnitchInfo(snitch.getId());
-
-        if (completed) {
-            player.sendMessage(ChatColor.AQUA + "Snitch Cleared");
-        } else {
-            player.sendMessage(ChatColor.DARK_RED + "Snitch Clear Failed");
-        }
-    }
-
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 		return null;
 	}
+	
+
+    public static void deleteLog(CommandSender sender, Snitch snitch) {
+        final Player player = (Player) sender;
+        final Boolean completed = JukeAlert.getInstance().getJaLogger().deleteSnitchInfo(snitch.getId());
+        //only send messages sync
+        new BukkitRunnable() {
+			
+			@Override
+			public void run() {
+				if (completed) {
+		            player.sendMessage(ChatColor.AQUA + "Cleared all snitch logs");
+		        } else {
+		            player.sendMessage(ChatColor.DARK_RED + "Snitch Clear Failed");
+		        }
+			}
+		}.runTask(JukeAlert.getInstance());
+    }
 }

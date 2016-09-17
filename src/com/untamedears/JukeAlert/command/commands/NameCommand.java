@@ -40,10 +40,7 @@ public class NameCommand extends PlayerCommand {
             if (snitch != null) {
             	JukeAlert plugin = JukeAlert.getInstance();
             	plugin.getJaLogger().updateSnitchName(snitch, name);
-            	Snitch newSnitch = snitch;
-            	newSnitch.setName(name);
-            	plugin.getSnitchManager().removeSnitch(snitch);
-            	plugin.getSnitchManager().addSnitch(newSnitch);
+            	snitch.setName(name);
             	sender.sendMessage(ChatColor.AQUA + " Changed snitch name to " + name);
             }
             return true;
