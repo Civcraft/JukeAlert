@@ -3,27 +3,13 @@ package com.untamedears.JukeAlert;
 import java.util.LinkedList;
 import java.util.logging.Level;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.untamedears.JukeAlert.command.JukeAlertCommandHandler;
-import com.untamedears.JukeAlert.command.commands.ClearCommand;
-import com.untamedears.JukeAlert.command.commands.ConfigCommand;
-import com.untamedears.JukeAlert.command.commands.GroupCommand;
-import com.untamedears.JukeAlert.command.commands.HelpCommand;
-import com.untamedears.JukeAlert.command.commands.InfoCommand;
-import com.untamedears.JukeAlert.command.commands.GUICommand;
-import com.untamedears.JukeAlert.command.commands.JaListCommand;
-import com.untamedears.JukeAlert.command.commands.JaMuteCommand;
-import com.untamedears.JukeAlert.command.commands.JaToggleLeversCommand;
-import com.untamedears.JukeAlert.command.commands.LookupCommand;
-import com.untamedears.JukeAlert.command.commands.NameCommand;
 import com.untamedears.JukeAlert.group.GroupMediator;
 import com.untamedears.JukeAlert.listener.ItemExchangeListener;
 import com.untamedears.JukeAlert.listener.JukeAlertListener;

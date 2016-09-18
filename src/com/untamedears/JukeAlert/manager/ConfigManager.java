@@ -2,12 +2,7 @@ package com.untamedears.JukeAlert.manager;
 
 import static com.untamedears.JukeAlert.util.Utility.setDebugging;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.untamedears.JukeAlert.JukeAlert;
 
@@ -46,16 +41,14 @@ public class ConfigManager
     
     private boolean broadcastAllServers;
 
-	private File main;
 	private FileConfiguration config;
-	private FileConfiguration cleanConfig;
 	
 	public ConfigManager()
 	{
-		this.plugin      = JukeAlert.getInstance();
-		this.config      = plugin.getConfig();
-		this.cleanConfig = new YamlConfiguration();
-		this.main        = new File(plugin.getDataFolder() + File.separator + "config.yml");
+		this.config = plugin.getConfig();
+		plugin.saveDefaultConfig();
+		plugin.reloadConfig();
+		this.config = plugin.getConfig();
 		this.load();
 	}
 
@@ -63,158 +56,42 @@ public class ConfigManager
 	 * Load configuration
 	 */
 	private void load()
-	{
-		boolean exists = main.exists();
-
-        if (exists)
-        {
-            try
-            {
-                config.options().copyDefaults(true);
-                config.load(main);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-        else
-        {
-            config.options().copyDefaults(true);
-        }
+	{        
+        username = config.getString("mysql.username");
+        host     = config.getString("mysql.host");
+        password = config.getString("mysql.password");
+        database = config.getString("mysql.database");
+        prefix   = config.getString("mysql.prefix");
+        port     = config.getInt("mysql.port");
         
-        username = loadString("mysql.username");
-        host     = loadString("mysql.host");
-        password = loadString("mysql.password");
-        database = loadString("mysql.database");
-        prefix   = loadString("mysql.prefix");
-        port     = loadInt("mysql.port");
-        
-        setDefaultCuboidSize(loadInt("settings.defaultCuboidSize"));
-        logsPerPage = loadInt("settings.logsPerPage");
-		daysFromLastAdminVisitForLoggedSnitchCulling = loadInt("settings.daysFromLastAdminVisitForLoggedSnitchCulling");
-		daysFromLastAdminVisitForNonLoggedSnitchCulling = loadInt("settings.daysFromLastAdminVisitForNonLoggedSnitchCulling");
-        allowTriggeringLevers = loadBoolean("settings.allowTriggeringLevers",false);
-        setDebugging(loadBoolean("settings.debugging"));
-        if (isSet("settings.max_alert_distance")) {
-            maxAlertDistanceAll = loadDouble("settings.max_alert_distance");
+        setDefaultCuboidSize(config.getInt("settings.defaultCuboidSize"));
+        logsPerPage = config.getInt("settings.logsPerPage");
+		daysFromLastAdminVisitForLoggedSnitchCulling = config.getInt("settings.daysFromLastAdminVisitForLoggedSnitchCulling");
+		daysFromLastAdminVisitForNonLoggedSnitchCulling = config.getInt("settings.daysFromLastAdminVisitForNonLoggedSnitchCulling");
+        allowTriggeringLevers = config.getBoolean("settings.allowTriggeringLevers",false);
+        setDebugging(config.getBoolean("settings.debugging"));
+        if (config.isDouble("settings.max_alert_distance")) {
+            maxAlertDistanceAll = config.getDouble("settings.max_alert_distance");
         }
-        if (isSet("settings.max_alert_distance_ns")) {
-            maxAlertDistanceNs = loadDouble("settings.max_alert_distance_ns");
+        if (config.isDouble("settings.max_alert_distance_ns")) {
+            maxAlertDistanceNs = config.getDouble("settings.max_alert_distance_ns");
         }
-        maxPlayerAlertCount = loadInt("settings.max_player_alert_count", Integer.MAX_VALUE);
-        taxReinforcementPerAlert = loadBoolean("settings.tax_reinforcement_per_alert");
+        maxPlayerAlertCount = config.getInt("settings.max_player_alert_count", Integer.MAX_VALUE);
+        taxReinforcementPerAlert = config.getBoolean("settings.tax_reinforcement_per_alert");
 
-        snitchEntryCullingEnabled = loadBoolean("entryculling.enabled", true);
-        maxEntryCount = loadInt("entryculling.maxcount", 200);
-        minEntryLifetimeDays = loadInt("entryculling.minlifetime", 1);
-        maxEntryLifetimeDays = loadInt("entryculling.maxlifetime", 8);
-        snitchCullingEnabled = loadBoolean("snitchculling.enabled", false);
-        maxSnitchLifetimeDays = loadInt("snitchculling.maxlifetime", 21);
-        alertRateLimit = loadInt("settings.alertratelimit", 70);
-        enableInvisibility = loadBoolean("settings.enableinvisiblity", false);
-        toggleRestartCheckGroup = loadBoolean("settings.togglerestartgroupcheck", false);
-        displayOwnerOnBreak = loadBoolean("settings.displayOwnerOnSnitchBreak", true);
-        softDelete = loadBoolean("settings.softDelete", true);
+        snitchEntryCullingEnabled = config.getBoolean("entryculling.enabled", true);
+        maxEntryCount = config.getInt("entryculling.maxcount", 200);
+        minEntryLifetimeDays = config.getInt("entryculling.minlifetime", 1);
+        maxEntryLifetimeDays = config.getInt("entryculling.maxlifetime", 8);
+        snitchCullingEnabled = config.getBoolean("snitchculling.enabled", false);
+        maxSnitchLifetimeDays = config.getInt("snitchculling.maxlifetime", 21);
+        alertRateLimit = config.getInt("settings.alertratelimit", 70);
+        enableInvisibility = config.getBoolean("settings.enableinvisiblity", false);
+        toggleRestartCheckGroup = config.getBoolean("settings.togglerestartgroupcheck", false);
+        displayOwnerOnBreak = config.getBoolean("settings.displayOwnerOnSnitchBreak", true);
+        softDelete = config.getBoolean("settings.softDelete", true);
 
-        broadcastAllServers = loadBoolean("mercury.broadcastallservers", false);
-        
-        save();
-    }
-
-    private Boolean loadBoolean(String path)
-    {
-        if (config.isBoolean(path))
-        {
-            boolean value = config.getBoolean(path);
-            cleanConfig.set(path, value);
-            return value;
-        }
-        return false;
-    }
-
-    private Boolean loadBoolean(String path, boolean defaultValue)
-    {
-        if (config.isBoolean(path))
-        {
-            boolean value = config.getBoolean(path);
-            cleanConfig.set(path, value);
-            return value;
-        }
-        return defaultValue;
-    }
-
-    private String loadString(String path)
-    {
-        if (config.isString(path))
-        {
-            String value = config.getString(path);
-            cleanConfig.set(path, value);
-            return value;
-        }
-
-        return "";
-    }
-
-    private int loadInt(String path)
-    {
-        if (config.isInt(path))
-        {
-            int value = config.getInt(path);
-            cleanConfig.set(path, value);
-            return value;
-        }
-
-        return 0;
-    }
-
-    private int loadInt(String path, int defaultValue) {
-        if (config.isInt(path)) {
-            int value = config.getInt(path);
-            cleanConfig.set(path, value);
-            return value;
-        }
-        return defaultValue;
-    }
-
-    private double loadDouble(String path)
-    {
-        if (config.isDouble(path))
-        {
-            double value = config.getDouble(path);
-            cleanConfig.set(path, value);
-            return value;
-        }
-
-        return 0;
-    }
-    
-    private List<String> loadStringList(String path)
-    {
-    	if(config.isList(path))
-    	{
-    		List<String> value = config.getStringList(path);
-    		cleanConfig.set(path, value);
-    		return value;
-    	}
-    	
-    	return null;
-    }
-
-    private boolean isSet(String path) {
-        return config.isSet(path);
-    }
-
-    public void save()
-    {
-        try
-        {
-            cleanConfig.save(main);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        broadcastAllServers = config.getBoolean("mercury.broadcastallservers", false);
     }
 
 	public String getUsername() {
@@ -291,30 +168,6 @@ public class ConfigManager
 
 	public void setLogsPerPage(int logsPerPage) {
 		this.logsPerPage = logsPerPage;
-	}
-
-	public File getMain() {
-		return main;
-	}
-
-	public void setMain(File main) {
-		this.main = main;
-	}
-
-	public FileConfiguration getConfig() {
-		return config;
-	}
-
-	public void setConfig(FileConfiguration config) {
-		this.config = config;
-	}
-
-	public FileConfiguration getCleanConfig() {
-		return cleanConfig;
-	}
-
-	public void setCleanConfig(FileConfiguration cleanConfig) {
-		this.cleanConfig = cleanConfig;
 	}
 
 	public boolean getSnitchEntryCullingEnabled() {
