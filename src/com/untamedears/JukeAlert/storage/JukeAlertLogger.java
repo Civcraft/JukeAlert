@@ -31,10 +31,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
-import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -60,14 +58,12 @@ public class JukeAlertLogger {
     private final String snitchDetailsTbl;
     private final String mutedGroupsTbl;
     private PreparedStatement getSnitchIdFromLocationStmt;
-    private PreparedStatement getAllSnitchesStmt;
     private PreparedStatement getLastSnitchID;
     private PreparedStatement getSnitchLogStmt;
     private PreparedStatement getSnitchLogGroupStmt;
     private PreparedStatement getSnitchListStmt;
     private PreparedStatement softDeleteSnitchLogStmt;
     private PreparedStatement deleteSnitchLogStmt;
-    private PreparedStatement insertSnitchLogStmt;
     private PreparedStatement insertNewSnitchStmt;
     private PreparedStatement softDeleteSnitchStmt;
     private PreparedStatement deleteSnitchStmt;
@@ -101,7 +97,6 @@ public class JukeAlertLogger {
     protected JukeAlert plugin;
     protected GroupMediator groupMediator;
     protected PreparedStatement getAllSnitchesByWorldStmt;
-	private PreparedStatement getAllSnitchesByGroupStmt;
 
     public JukeAlertLogger() {
         plugin = JukeAlert.getInstance();
@@ -411,9 +406,6 @@ public class JukeAlertLogger {
 
     private void initializeStatements() {
 
-        getAllSnitchesStmt = db.prepareStatement(String.format(
-                "SELECT * FROM %s WHERE soft_delete = 0", snitchsTbl));
-
         getAllSnitchesByWorldStmt = db.prepareStatement(String.format(
                 "SELECT * FROM %s WHERE snitch_world = ? AND soft_delete = 0", snitchsTbl));
 
@@ -445,13 +437,6 @@ public class JukeAlertLogger {
         // statement to get the ID of a snitch in the main snitchsTbl based on a Location (x,y,z, world)
         getSnitchIdFromLocationStmt = db.prepareStatement(String.format("SELECT snitch_id FROM %s"
                 + " WHERE snitch_x=? AND snitch_y=? AND snitch_z=? AND snitch_world=? AND soft_delete = 0", snitchsTbl));
-
-        // statement to insert a log entry into the snitchesDetailsTable
-        insertSnitchLogStmt = db.prepareStatement(String.format(
-                "INSERT INTO %s (snitch_id, snitch_log_time, snitch_logged_action, snitch_logged_initiated_user,"
-                + " snitch_logged_victim_user, snitch_logged_x, snitch_logged_y, snitch_logged_z, snitch_logged_materialid) "
-                + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                snitchDetailsTbl));
 
         //
         insertNewSnitchStmt = db.prepareStatement(String.format(
@@ -1263,7 +1248,6 @@ public class JukeAlertLogger {
     public String createInfoString(ResultSet set, boolean isGroup) {
         String resultString = ChatColor.RED + "Error!";
         try {
-            final int id = set.getInt("snitch_details_id");
             final int snitchID = set.getInt("snitch_id");
 
             final Snitch snitch = JukeAlert.getInstance().getSnitchManager().getSnitch(snitchID);
@@ -1283,7 +1267,6 @@ public class JukeAlertLogger {
 
             String actionString = "BUG";
             ChatColor actionColor = ChatColor.WHITE;
-            boolean useCoordinate = false;
             int actionTextType = 0;
             switch(action) {
                 case ENTRY:

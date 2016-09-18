@@ -61,7 +61,7 @@ public class SnitchLogGUI {
 	}
 	
 	public static IClickable constructExitClick() {
-		ItemStack is = new ItemStack(Material.WOODEN_DOOR);
+		ItemStack is = new ItemStack(Material.WOOD_DOOR);
 		ISUtils.setName(is, ChatColor.GOLD + "Exit");
 		ISUtils.addLore(is, ChatColor.AQUA + "Click to exit GUI");
 		return new Clickable(is) {

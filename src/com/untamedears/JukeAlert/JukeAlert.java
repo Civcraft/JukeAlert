@@ -29,7 +29,6 @@ import com.untamedears.JukeAlert.listener.ItemExchangeListener;
 import com.untamedears.JukeAlert.listener.JukeAlertListener;
 import com.untamedears.JukeAlert.listener.MercuryListener;
 import com.untamedears.JukeAlert.manager.ConfigManager;
-import com.untamedears.JukeAlert.manager.PlayerManager;
 import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.storage.JukeAlertLogger;
 import com.untamedears.JukeAlert.util.RateLimiter;
@@ -40,7 +39,6 @@ public class JukeAlert extends ACivMod {
     private JukeAlertLogger jaLogger;
     private ConfigManager configManager;
     private SnitchManager snitchManager;
-    private PlayerManager playerManager;
     private JukeAlertCommandHandler commandHandler;
     private GroupMediator groupMediator;
 
@@ -52,7 +50,6 @@ public class JukeAlert extends ACivMod {
         groupMediator = new GroupMediator();
         jaLogger = new JukeAlertLogger();
         snitchManager = new SnitchManager();
-        playerManager = new PlayerManager();
         handle = new JukeAlertCommandHandler();
         handle.registerCommands();
         registerEvents();
@@ -110,10 +107,6 @@ public class JukeAlert extends ACivMod {
 
     public SnitchManager getSnitchManager() {
         return snitchManager;
-    }
-
-    public PlayerManager getPlayerManager() {
-        return playerManager;
     }
 
     public GroupMediator getGroupMediator() {

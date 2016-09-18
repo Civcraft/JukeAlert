@@ -54,7 +54,6 @@ import org.spigotmc.event.entity.EntityMountEvent;
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.external.Mercury;
 import com.untamedears.JukeAlert.external.VanishNoPacket;
-import com.untamedears.JukeAlert.manager.PlayerManager;
 import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.model.Snitch;
 
@@ -76,7 +75,6 @@ public class JukeAlertListener implements Listener {
 	private ReinforcementManager rm = Citadel.getReinforcementManager();
     private final JukeAlert plugin = JukeAlert.getInstance();
     SnitchManager snitchManager = plugin.getSnitchManager();
-    PlayerManager playerManager = plugin.getPlayerManager();
     private final Map<UUID, Set<Snitch>> playersInSnitches = new TreeMap<UUID, Set<Snitch>>();
     private final VanishNoPacket vanishNoPacket = new VanishNoPacket();
     private final Mercury mercury = new Mercury();

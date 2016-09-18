@@ -38,6 +38,7 @@ public class SnitchOverviewGUI {
 			ISUtils.setName(is, ChatColor.GOLD + snitch.getName());
 			ISUtils.addLore(is, ChatColor.AQUA + "Located at " + snitch.getX() + ", " + snitch.getY() + ", " + snitch.getZ());
 			ISUtils.addLore(is, ChatColor.YELLOW + "Group: " + snitch.getGroup().getName());
+			ISUtils.addLore(is, ChatColor.GREEN + "Click to view the logs");
 			clicks.add(new Clickable(is) {
 				
 				@Override

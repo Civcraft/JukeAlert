@@ -3,6 +3,7 @@ package com.untamedears.JukeAlert.manager;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,6 +38,7 @@ public class SnitchManager {
     private final JukeAlertLogger logger;
     private Map<Integer, Snitch> snitchesById;
     private Map<World, SparseQuadTree> snitches;
+    private Map<String, Set <Snitch>> snitchesByGroup;
 
     public SnitchManager() {
         plugin = JukeAlert.getInstance();
@@ -46,6 +48,7 @@ public class SnitchManager {
     public void initialize() {
         snitchesById = new TreeMap<Integer, Snitch>();
         snitches = new HashMap<World, SparseQuadTree>(EXIT_PADDING);
+        snitchesByGroup = new HashMap<String, Set<Snitch>>();
         List<World> worlds = plugin.getServer().getWorlds();
         for (World world : worlds) {
             SparseQuadTree worldSnitches = new SparseQuadTree(EXIT_PADDING);
@@ -54,6 +57,12 @@ public class SnitchManager {
                 Snitch snitch = se.nextElement();
                 snitchesById.put(snitch.getId(), snitch);
                 worldSnitches.add(snitch);
+                Set <Snitch> groupSet = snitchesByGroup.get(snitch.getGroup().getName());
+                if (groupSet == null) {
+                	groupSet  = new HashSet<Snitch>();
+                	snitchesByGroup.put(snitch.getGroup().getName(), groupSet);
+                }
+                groupSet.add(snitch);
             }
             snitches.put(world, worldSnitches);
         }
@@ -194,12 +203,22 @@ public class SnitchManager {
         } else {
             snitches.get(world).add(snitch);
         }
+        Set <Snitch> groupSet = snitchesByGroup.get(snitch.getGroup().getName());
+        if (groupSet == null) {
+        	groupSet  = new HashSet<Snitch>();
+        	snitchesByGroup.put(snitch.getGroup().getName(), groupSet);
+        }
+        groupSet.add(snitch);
         snitchesById.put(snitch.getId(), snitch);
     }
 
     public void removeSnitch(Snitch snitch) {
         snitches.get(snitch.getLoc().getWorld()).remove(snitch);
         snitchesById.remove(snitch.getId());
+        Set <Snitch> groupSet = snitchesByGroup.get(snitch.getGroup().getName());
+        if (groupSet != null) {
+        	groupSet.remove(snitch);
+        }
     }
 
     public Set<Snitch> findSnitches(World world, Location location) {
@@ -220,5 +239,9 @@ public class SnitchManager {
             }
         }
         return results;
+    }
+    
+    public Set <Snitch> getSnitchesForGroup(String groupName) {
+    	return snitchesByGroup.get(groupName);
     }
 }
